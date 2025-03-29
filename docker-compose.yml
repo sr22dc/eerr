@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.nginx
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./public:/var/www/html/public
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./var/logs/nginx:/var/log/nginx
+    depends_on:
+      - php
+      - node
+    networks:
+      - reverseproxy-network
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.php
+    volumes:
+      - .:/var/www/html
+      - ./var/logs/php:/var/log/php
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    networks:
+      - reverseproxy-network
+
+  node:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.node
+    volumes:
+      - ./node:/app
+      - ./var/logs/node:/var/log/node
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    networks:
+      - reverseproxy-network
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
+    networks:
+      - reverseproxy-network
+
+networks:
+  reverseproxy-network:
+    driver: bridge
+
+volumes:
+  redis-data:

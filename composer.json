@@ -1,0 +1,23 @@
+{
+    "name": "reverseproxy/app",
+    "description": "Reverse Proxy Application",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.5",
+        "symfony/http-foundation": "^6.2",
+        "monolog/monolog": "^3.3",
+        "predis/predis": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "ReverseProxy\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
